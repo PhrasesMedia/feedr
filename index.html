@@ -1,0 +1,932 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Feedr</title>
+  <style>
+    :root{
+      --bg:#f7f8fb;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --border:#e6e8ef;
+      --primary:#2f8ef3;
+      --primaryHover:#1f73c9;
+      --danger:#ef4444;
+      --shadow:0 12px 30px rgba(15, 23, 42, 0.08);
+      --r:18px;
+      --mono:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+
+      --cryBg:#f3e8ff;
+      --cryBorder:#e9d5ff;
+      --cryText:#4c1d95;
+      --cryDot:#a855f7;
+
+      --softBg:#eaf3ff;
+      --softBorder:#d6e8ff;
+      --softText:#0b3b78;
+
+      --statusBg:#f4f7ff;
+
+      --noteBg:#eef2ff;
+      --noteBorder:#c7d2fe;
+      --noteText:#3730a3;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      min-height:100svh;
+    }
+    .wrap{max-width:760px;margin:0 auto;padding:28px 14px 36px;}
+    .header{text-align:center;margin-bottom:14px;}
+    .icon{
+      width:52px;height:52px;margin:0 auto 12px;border-radius:16px;
+      background:var(--card);box-shadow:var(--shadow);
+      display:grid;place-items:center;font-size:22px;
+    }
+    h1{margin:0;font-size:26px;letter-spacing:-0.4px}
+    .sub{margin:8px 0 0;color:var(--muted);font-size:13px;line-height:1.35}
+
+    .links{
+      display:flex;gap:14px;justify-content:center;align-items:center;
+      margin-top:10px;flex-wrap:wrap;
+    }
+    .linkBtn{
+      background:none;border:none;padding:0;
+      color:var(--muted);font-weight:800;cursor:pointer;
+      font-size:12px;text-decoration:underline;text-underline-offset:3px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--r);
+      box-shadow:var(--shadow);
+      padding:16px;
+      margin-top:14px;
+    }
+    .cardTop{
+      display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+      margin-bottom:10px;
+    }
+    .title{font-weight:950;letter-spacing:-0.2px;font-size:16px}
+    .meta{color:var(--muted);font-size:12px;font-family:var(--mono);white-space:nowrap}
+
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 12px;}
+    button.btn{
+      appearance:none;border:1px solid transparent;
+      background:var(--primary);color:#fff;
+      padding:12px 14px;border-radius:14px;
+      cursor:pointer;font-weight:950;letter-spacing:-0.1px;
+      transition:transform .05s ease, background .12s ease;
+      min-width:140px;
+    }
+    button.btn:hover{background:var(--primaryHover)}
+    button.btn:active{transform:translateY(1px)}
+    button.btn.soft{
+      background:var(--softBg);
+      color:var(--softText);
+      border:1px solid var(--softBorder);
+    }
+    button.btn.soft:hover{background:#dbeeff}
+    button.btn.cry{
+      background:var(--cryBg);
+      color:var(--cryText);
+      border:1px solid var(--cryBorder);
+    }
+    button.btn.cry:hover{background:#ede0ff}
+
+    .statusLine{
+      color:#1f2937;font-size:14px;line-height:1.35;
+      padding:10px 12px;border-radius:14px;background:var(--statusBg);
+    }
+    .statusLine small{
+      display:block;color:var(--muted);margin-top:6px;
+      font-size:12px;line-height:1.35;
+    }
+
+    .logHead{
+      display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+      margin-top:14px;padding-top:14px;border-top:1px solid var(--border);
+    }
+    .logTitle{font-weight:950;font-size:14px;letter-spacing:-0.2px}
+
+    .entries{
+      display:grid;
+      gap:10px;
+      margin-top:10px;
+      max-height:360px;
+      overflow:auto;
+      padding-right:4px
+    }
+
+    .entry{
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:12px 12px;
+      background:#fff;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      cursor:pointer;
+      transition:background .12s ease, transform .03s ease;
+    }
+    .entry:hover{background:#fbfcff}
+    .entry:active{transform:translateY(1px)}
+
+    .left{display:flex;align-items:flex-start;gap:10px;min-width:0}
+    .dot{width:10px;height:10px;border-radius:999px;flex:0 0 auto;margin-top:4px}
+    .dotFeed{background:#22c55e}
+    .dotWet{background:var(--primary)}
+    .dotPoo{background:#f59e0b}
+    .dotCry{background:var(--cryDot)}
+
+    .etype{font-weight:950;font-size:13px;letter-spacing:-0.1px}
+    .emoji{margin-right:6px}
+    .etime{
+      font-family:var(--mono);
+      font-size:12px;
+      color:var(--muted);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width:380px;
+      margin-top:2px;
+    }
+
+    .tag{
+      display:inline-block;
+      margin-top:6px;
+      padding:3px 8px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:900;
+      border:1px solid var(--border);
+      color:#374151;
+      background:#f8fafc;
+    }
+    .tagHungry{border-color:#d6e8ff;background:#eef6ff;color:#0b3b78;}
+    .tagNappy{border-color:#fde68a;background:#fffbeb;color:#92400e;}
+
+    /* Notes: content-like */
+    .noteBlock{
+      margin-top:6px;
+      font-size:12px;
+      color:#475569;
+      background:#f3f4f6;
+      border:none;
+      border-radius:10px;
+      padding:6px 8px;
+      line-height:1.35;
+      white-space:pre-wrap;
+    }
+
+    .right{
+      display:flex;
+      flex-direction:column;
+      align-items:flex-start;
+      gap:6px;
+      flex:0 0 auto;
+    }
+    .noteBtn{
+      border:1px solid var(--noteBorder);
+      background:var(--noteBg);
+      color:var(--noteText);
+      font-weight:950;
+      font-size:12px;
+      padding:8px 10px;
+      border-radius:999px;
+      cursor:pointer;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    }
+    .noteBtn:hover{filter:brightness(0.98)}
+
+    .empty{color:var(--muted);font-size:13px;padding:10px 2px 0}
+
+    .footer{
+      text-align:center;margin-top:14px;color:var(--muted);
+      font-size:12px;line-height:1.45;
+    }
+
+    .bottomActions{
+      display:flex;justify-content:center;margin-top:14px;
+    }
+    .dangerBtn{
+      background:#fff;
+      border:1px solid #fecaca;
+      color:#b91c1c;
+      font-weight:950;
+      padding:12px 14px;
+      border-radius:14px;
+      cursor:pointer;
+    }
+    .dangerBtn:hover{ background:#fff5f5; }
+
+    /* Modal */
+    .overlay{
+      position:fixed; inset:0; background:rgba(15,23,42,0.52);
+      display:none; align-items:center; justify-content:center;
+      padding:16px; z-index:9999;
+    }
+    .overlay.show{display:flex}
+    .modal{
+      width:min(560px,100%);
+      background:#fff;border-radius:18px;
+      box-shadow:0 25px 70px rgba(0,0,0,0.28);
+      padding:14px;border:1px solid var(--border);
+    }
+    .modalHead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+    .modalHead h3{margin:0;font-size:15px;letter-spacing:-0.1px;font-weight:950}
+    .modalSub{margin:0 0 10px;color:var(--muted);font-size:12px;line-height:1.35}
+    .modalGrid{display:grid;gap:10px}
+    label{display:block;color:var(--muted);font-size:12px;font-weight:800;margin:0 0 6px}
+    input[type="number"], input[type="datetime-local"], textarea{
+      width:100%;
+      padding:11px 10px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      font-size:14px;
+      outline:none;
+      font-family:inherit;
+    }
+    textarea{min-height:90px;resize:vertical;}
+    input:focus, textarea:focus{border-color:#9ac7fb;box-shadow:0 0 0 3px rgba(47,142,243,0.14)}
+    .modalBtns{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:12px}
+    .mini{
+      padding:10px 12px;border-radius:14px;font-weight:950;cursor:pointer;
+      border:1px solid var(--border);background:#fff;
+    }
+    .miniPrimary{background:var(--primary);border-color:transparent;color:#fff}
+    .miniPrimary:hover{background:var(--primaryHover)}
+    .miniDanger{border-color:#fecaca;color:#b91c1c}
+
+    .insightsBox{
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:12px;
+      background:#fbfcff;
+    }
+    .insRow{
+      display:flex;justify-content:space-between;gap:12px;align-items:baseline;
+      padding:8px 0;border-top:1px solid var(--border);
+      font-family:var(--mono);font-size:12px;color:#334155;
+    }
+    .insRow:first-child{border-top:none}
+    .insKey{color:var(--muted);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-weight:800}
+
+    .toast{
+      position:fixed;left:50%;bottom:18px;transform:translateX(-50%);
+      background:#111827;color:#fff;padding:10px 12px;border-radius:999px;
+      font-size:12px;font-family:var(--mono);opacity:0;pointer-events:none;
+      transition:opacity .18s ease;z-index:99999;
+    }
+    .toast.show{opacity:1}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div class="icon" aria-hidden="true">🍼</div>
+      <h1>Feedr</h1>
+      <div class="sub">Tap to log. Feedr shows a rolling last 24 hours.</div>
+      <div class="links">
+        <button class="linkBtn" id="openInsights" type="button">Insights</button>
+        <button class="linkBtn" id="openSettings" type="button">Settings</button>
+      </div>
+    </div>
+
+    <!-- Crying -->
+    <div class="card">
+      <div class="cardTop">
+        <div class="title">Crying</div>
+        <div class="meta" id="cryMeta">24h: 😢 Cries 0</div>
+      </div>
+      <div class="actions">
+        <button class="btn cry" id="addCryBtn" type="button">+ 😢 Cry</button>
+      </div>
+      <div class="statusLine" id="cryStatus">
+        Tap “+ Cry” when crying starts (or when you notice it).
+        <small>Cries in last 24h: 0. (Link window: 20 min)</small>
+      </div>
+    </div>
+
+    <!-- Feeding -->
+    <div class="card">
+      <div class="cardTop">
+        <div class="title">Feeding</div>
+        <div class="meta" id="feedMeta">No 🍼 feeds</div>
+      </div>
+      <div class="actions">
+        <button class="btn" id="addFeedBtn" type="button">+ 🍼 Feed</button>
+      </div>
+      <div class="statusLine" id="feedStatus">
+        Tap “+ Feed” after a feed.
+        <small>Guide only — follow baby’s cues and your care team’s advice.</small>
+      </div>
+    </div>
+
+    <!-- Nappies + log -->
+    <div class="card">
+      <div class="cardTop">
+        <div class="title">Nappies</div>
+        <div class="meta" id="nappyMeta">24h: 💧 Wet 0 · 💩 Poo 0</div>
+      </div>
+      <div class="actions">
+        <button class="btn soft" id="addWetBtn" type="button">+ 💧 Wet</button>
+        <button class="btn soft" id="addPooBtn" type="button">+ 💩 Poo</button>
+      </div>
+
+      <div class="statusLine" id="summaryLine">
+        Last 24h: 💧 Wet 0 · 💩 Poo 0 · 🍼 Feeds 0 · 😢 Cries 0.
+        <small>If you’re worried, baby is very sleepy/hard to wake, or nappies drop off suddenly — check in with your midwife/GP.</small>
+      </div>
+
+      <div class="logHead">
+        <div class="logTitle">Last 24h log</div>
+        <div class="meta" id="logMeta">0 entries</div>
+      </div>
+
+      <div class="entries" id="entries"></div>
+      <div class="empty" id="emptyMsg">No entries yet.</div>
+
+      <div class="bottomActions">
+        <button class="dangerBtn" id="clearAllBtn" type="button">Clear all logs</button>
+      </div>
+    </div>
+
+    <div class="footer">
+      Feedr is a reminder/logging tool only and can’t diagnose feeding issues. If you’re worried at all, contact your midwife/GP/local health service.
+    </div>
+  </div>
+
+  <!-- Entry edit modal -->
+  <div class="overlay" id="entryOverlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="entryTitle">
+      <div class="modalHead">
+        <h3 id="entryTitle">Edit entry</h3>
+        <button class="mini" id="closeEntryModal" type="button">Close</button>
+      </div>
+      <p class="modalSub" id="entrySub">Adjust timestamp, add a note, or delete.</p>
+
+      <div class="modalGrid">
+        <div>
+          <label for="entryDatetime">Date & time</label>
+          <input id="entryDatetime" type="datetime-local" />
+        </div>
+        <div>
+          <label for="entryNote">Note (optional)</label>
+          <textarea id="entryNote" placeholder="e.g. settled after burp, cluster feed, very unsettled..."></textarea>
+        </div>
+      </div>
+
+      <div class="modalBtns">
+        <button class="mini miniDanger" id="deleteEntry" type="button">Delete</button>
+        <button class="mini" id="cancelEntry" type="button">Cancel</button>
+        <button class="mini miniPrimary" id="saveEntry" type="button">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings modal -->
+  <div class="overlay" id="settingsOverlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <div class="modalHead">
+        <h3 id="settingsTitle">Settings</h3>
+        <button class="mini" id="closeSettings" type="button">Close</button>
+      </div>
+      <p class="modalSub">These only affect the feeding “window” text + Cry linking window.</p>
+
+      <div class="modalGrid">
+        <div>
+          <label for="targetMinHrs">Window start (hours)</label>
+          <input id="targetMinHrs" type="number" min="0.5" step="0.25" />
+        </div>
+        <div>
+          <label for="targetMaxHrs">Window end (hours)</label>
+          <input id="targetMaxHrs" type="number" min="0.5" step="0.25" />
+        </div>
+        <div>
+          <label for="maxStretchHrs">Max stretch (hours)</label>
+          <input id="maxStretchHrs" type="number" min="1" step="0.25" />
+        </div>
+        <div>
+          <label for="warnBeforeMins">Warn before max (minutes)</label>
+          <input id="warnBeforeMins" type="number" min="0" step="5" />
+        </div>
+        <div>
+          <label for="linkWindowMins">Cry link window (minutes)</label>
+          <input id="linkWindowMins" type="number" min="1" step="1" />
+        </div>
+      </div>
+
+      <div class="modalBtns">
+        <button class="mini miniPrimary" id="saveSettings" type="button">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Insights modal -->
+  <div class="overlay" id="insightsOverlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="insightsTitle">
+      <div class="modalHead">
+        <h3 id="insightsTitle">Insights (last 24h)</h3>
+        <button class="mini" id="closeInsights" type="button">Close</button>
+      </div>
+      <p class="modalSub">
+        A Cry is “linked” if the next logged event is a Feed or Poo within your link window. This is just a pattern helper.
+      </p>
+      <div class="insightsBox" id="insightsBox"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Saved</div>
+
+<script>
+  const STORAGE_KEY = "feedr_emojis_notes_v2";
+
+  const els = {
+    addFeedBtn: document.getElementById("addFeedBtn"),
+    addWetBtn: document.getElementById("addWetBtn"),
+    addPooBtn: document.getElementById("addPooBtn"),
+    addCryBtn: document.getElementById("addCryBtn"),
+
+    feedMeta: document.getElementById("feedMeta"),
+    feedStatus: document.getElementById("feedStatus"),
+
+    nappyMeta: document.getElementById("nappyMeta"),
+    summaryLine: document.getElementById("summaryLine"),
+
+    cryMeta: document.getElementById("cryMeta"),
+    cryStatus: document.getElementById("cryStatus"),
+
+    entries: document.getElementById("entries"),
+    emptyMsg: document.getElementById("emptyMsg"),
+    logMeta: document.getElementById("logMeta"),
+
+    clearAllBtn: document.getElementById("clearAllBtn"),
+
+    // entry modal
+    entryOverlay: document.getElementById("entryOverlay"),
+    entryDatetime: document.getElementById("entryDatetime"),
+    entryNote: document.getElementById("entryNote"),
+    entrySub: document.getElementById("entrySub"),
+    entryTitle: document.getElementById("entryTitle"),
+    closeEntryModal: document.getElementById("closeEntryModal"),
+    cancelEntry: document.getElementById("cancelEntry"),
+    saveEntry: document.getElementById("saveEntry"),
+    deleteEntry: document.getElementById("deleteEntry"),
+
+    // settings
+    openSettings: document.getElementById("openSettings"),
+    settingsOverlay: document.getElementById("settingsOverlay"),
+    closeSettings: document.getElementById("closeSettings"),
+    saveSettings: document.getElementById("saveSettings"),
+    targetMinHrs: document.getElementById("targetMinHrs"),
+    targetMaxHrs: document.getElementById("targetMaxHrs"),
+    maxStretchHrs: document.getElementById("maxStretchHrs"),
+    warnBeforeMins: document.getElementById("warnBeforeMins"),
+    linkWindowMins: document.getElementById("linkWindowMins"),
+
+    // insights
+    openInsights: document.getElementById("openInsights"),
+    insightsOverlay: document.getElementById("insightsOverlay"),
+    closeInsights: document.getElementById("closeInsights"),
+    insightsBox: document.getElementById("insightsBox"),
+
+    toast: document.getElementById("toast"),
+  };
+
+  let state = {
+    settings: {
+      targetMinHrs:2,
+      targetMaxHrs:3,
+      maxStretchHrs:4,
+      warnBeforeMins:30,
+      linkWindowMins:20
+    },
+    events: [] // {type:"feed"|"wet"|"poo"|"cry", ts:number, note?:string}
+  };
+
+  let editingIndex = null;
+  let focusNoteOnOpen = false;
+
+  function clamp(n,min,max){ return Math.max(min, Math.min(max,n)); }
+  function safeNum(v){ const n=Number(v); return Number.isFinite(n)?n:null; }
+  function within24h(ts){ return Date.now() - ts <= 24*60*60*1000; }
+  function within72h(ts){ return Date.now() - ts <= 72*60*60*1000; }
+
+  function timeOnly(ts){ return new Date(ts).toLocaleTimeString(undefined,{hour:"2-digit",minute:"2-digit"}); }
+  function formatTime(ts){ return new Date(ts).toLocaleString(undefined,{weekday:"short", hour:"2-digit", minute:"2-digit"}); }
+
+  function msToHhMm(ms){
+    const totalMins = Math.max(0, Math.round(ms/60000));
+    const h = Math.floor(totalMins/60);
+    const m = totalMins%60;
+    if(h<=0) return `${m}m`;
+    return `${h}h ${String(m).padStart(2,"0")}m`;
+  }
+
+  function toDatetimeLocalValue(ts){
+    const d=new Date(ts);
+    const pad=(x)=>String(x).padStart(2,"0");
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+  function fromDatetimeLocalValue(v){
+    const d=new Date(v);
+    const ts=d.getTime();
+    return Number.isFinite(ts)?ts:null;
+  }
+
+  function escapeHtml(str){
+    return String(str)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  function toast(msg="Saved"){
+    els.toast.textContent = msg;
+    els.toast.classList.add("show");
+    setTimeout(()=>els.toast.classList.remove("show"), 900);
+  }
+
+  function save(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){} }
+
+  function load(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return;
+      const parsed = JSON.parse(raw);
+      if(!parsed || typeof parsed !== "object") return;
+
+      const s = parsed.settings || {};
+      state.settings.targetMinHrs = safeNum(s.targetMinHrs) ?? 2;
+      state.settings.targetMaxHrs = safeNum(s.targetMaxHrs) ?? 3;
+      state.settings.maxStretchHrs = safeNum(s.maxStretchHrs) ?? 4;
+      state.settings.warnBeforeMins = safeNum(s.warnBeforeMins) ?? 30;
+      state.settings.linkWindowMins = safeNum(s.linkWindowMins) ?? 20;
+
+      const ev = Array.isArray(parsed.events) ? parsed.events : [];
+      state.events = ev
+        .filter(e => e && ["feed","wet","poo","cry"].includes(e.type) && Number.isFinite(Number(e.ts)))
+        .map(e => ({type:e.type, ts:Number(e.ts), note: typeof e.note==="string" ? e.note : ""}))
+        .sort((a,b)=>a.ts-b.ts)
+        .filter(e => within72h(e.ts));
+    }catch(e){}
+  }
+
+  function addEvent(type){
+    state.events.push({type, ts: Date.now(), note:""});
+    state.events.sort((a,b)=>a.ts-b.ts);
+    save();
+    render();
+    toast("Logged");
+  }
+
+  function counts24h(){
+    const recent = state.events.filter(e => within24h(e.ts));
+    let wet=0, poo=0, feed=0, cry=0;
+    for(const e of recent){
+      if(e.type==="wet") wet++;
+      if(e.type==="poo") poo++;
+      if(e.type==="feed") feed++;
+      if(e.type==="cry") cry++;
+    }
+    return {wet, poo, feed, cry, total: recent.length};
+  }
+
+  function lastFeedTs(){
+    for(let i=state.events.length-1;i>=0;i--){
+      if(state.events[i].type==="feed") return state.events[i].ts;
+    }
+    return null;
+  }
+
+  function cryLinkTagForIndex(index){
+    const e = state.events[index];
+    if(!e || e.type !== "cry") return null;
+
+    const winMs = clamp(Number(state.settings.linkWindowMins)||20, 1, 240) * 60 * 1000;
+
+    for(let j=index+1;j<state.events.length;j++){
+      const next = state.events[j];
+      const dt = next.ts - e.ts;
+      if(dt < 0) continue;
+      if(dt > winMs) return null;
+      if(next.type === "feed") return {kind:"hungry", minutes: Math.round(dt/60000)};
+      if(next.type === "poo") return {kind:"nappy", minutes: Math.round(dt/60000)};
+    }
+    return null;
+  }
+
+  function openOverlay(overlayEl){
+    overlayEl.classList.add("show");
+    overlayEl.setAttribute("aria-hidden","false");
+  }
+  function closeOverlay(overlayEl){
+    overlayEl.classList.remove("show");
+    overlayEl.setAttribute("aria-hidden","true");
+  }
+
+  function openEntryModal(index, {focusNote=false} = {}){
+    const e = state.events[index];
+    if(!e) return;
+    editingIndex = index;
+    focusNoteOnOpen = !!focusNote;
+
+    const labelMap = {feed:"🍼 Feed", wet:"💧 Wet", poo:"💩 Poo", cry:"😢 Cry"};
+    els.entryTitle.textContent = "Edit entry";
+    els.entrySub.textContent = `Editing: ${labelMap[e.type] || "Entry"}`;
+    els.entryDatetime.value = toDatetimeLocalValue(e.ts);
+    els.entryNote.value = e.note || "";
+
+    openOverlay(els.entryOverlay);
+    setTimeout(()=>{
+      if(focusNoteOnOpen) els.entryNote.focus();
+      else els.entryDatetime.focus();
+    },0);
+  }
+
+  function closeEntryModal(){
+    editingIndex = null;
+    focusNoteOnOpen = false;
+    closeOverlay(els.entryOverlay);
+  }
+
+  function saveEntryEdit(){
+    if(editingIndex==null) return;
+    const ts = fromDatetimeLocalValue(els.entryDatetime.value);
+    if(ts==null) return;
+
+    const maxFuture = Date.now() + 5*60*1000;
+    state.events[editingIndex].ts = Math.min(ts, maxFuture);
+    state.events[editingIndex].note = (els.entryNote.value || "").trim();
+
+    state.events.sort((a,b)=>a.ts-b.ts);
+    save();
+    render();
+    toast("Saved");
+    closeEntryModal();
+  }
+
+  function deleteEntry(){
+    if(editingIndex==null) return;
+    state.events.splice(editingIndex,1);
+    save();
+    render();
+    toast("Deleted");
+    closeEntryModal();
+  }
+
+  function openSettings(){
+    els.targetMinHrs.value = state.settings.targetMinHrs;
+    els.targetMaxHrs.value = state.settings.targetMaxHrs;
+    els.maxStretchHrs.value = state.settings.maxStretchHrs;
+    els.warnBeforeMins.value = state.settings.warnBeforeMins;
+    els.linkWindowMins.value = state.settings.linkWindowMins;
+    openOverlay(els.settingsOverlay);
+  }
+
+  function saveSettings(){
+    const tMin = safeNum(els.targetMinHrs.value);
+    const tMax = safeNum(els.targetMaxHrs.value);
+    const maxS = safeNum(els.maxStretchHrs.value);
+    const warnM = safeNum(els.warnBeforeMins.value);
+    const linkM = safeNum(els.linkWindowMins.value);
+
+    if(tMin!=null) state.settings.targetMinHrs = clamp(tMin,0.5,12);
+    if(tMax!=null) state.settings.targetMaxHrs = clamp(tMax,0.5,12);
+    if(maxS!=null) state.settings.maxStretchHrs = clamp(maxS,1,12);
+    if(warnM!=null) state.settings.warnBeforeMins = clamp(warnM,0,180);
+    if(linkM!=null) state.settings.linkWindowMins = clamp(linkM,1,240);
+
+    const minH = Math.min(state.settings.targetMinHrs, state.settings.targetMaxHrs);
+    const maxH = Math.max(state.settings.targetMinHrs, state.settings.targetMaxHrs);
+    state.settings.targetMinHrs = minH;
+    state.settings.targetMaxHrs = maxH;
+
+    save();
+    render();
+    toast("Saved");
+    closeOverlay(els.settingsOverlay);
+  }
+
+  function buildInsights(){
+    const cries = [];
+    for(let i=0;i<state.events.length;i++){
+      const e = state.events[i];
+      if(e.type === "cry" && within24h(e.ts)) cries.push(i);
+    }
+
+    let hungry=0, nappy=0, unresolved=0;
+    for(const idx of cries){
+      const tag = cryLinkTagForIndex(idx);
+      if(!tag) unresolved++;
+      else if(tag.kind==="hungry") hungry++;
+      else if(tag.kind==="nappy") nappy++;
+    }
+
+    const total = cries.length;
+    const pct = (n) => total ? Math.round((n/total)*100) : 0;
+
+    els.insightsBox.innerHTML = "";
+    const rows = [
+      ["😢 Cries", `${total}`],
+      ["Linked → 🍼 Feed", `${hungry} (${pct(hungry)}%)`],
+      ["Linked → 💩 Poo", `${nappy} (${pct(nappy)}%)`],
+      ["Unlinked", `${unresolved} (${pct(unresolved)}%)`],
+      ["Link window", `${state.settings.linkWindowMins} min`],
+    ];
+    for(const [k,v] of rows){
+      const r = document.createElement("div");
+      r.className = "insRow";
+      r.innerHTML = `<div class="insKey">${k}</div><div>${v}</div>`;
+      els.insightsBox.appendChild(r);
+    }
+  }
+
+  function openInsights(){
+    buildInsights();
+    openOverlay(els.insightsOverlay);
+  }
+
+  function clearAllLogs(){
+    if(!state.events.length){
+      toast("Nothing to clear");
+      return;
+    }
+    if(!confirm("Clear all logs? (This removes entries. Settings stay.)")) return;
+    state.events = [];
+    save();
+    render();
+    toast("Cleared");
+  }
+
+  function render(){
+    state.events = state.events.filter(e => within72h(e.ts));
+    state.events.sort((a,b)=>a.ts-b.ts);
+
+    const c = counts24h();
+    els.nappyMeta.textContent = `24h: 💧 Wet ${c.wet} · 💩 Poo ${c.poo}`;
+    els.cryMeta.textContent = `24h: 😢 Cries ${c.cry}`;
+
+    els.cryStatus.innerHTML =
+      `Tap “+ Cry” when crying starts (or when you notice it).` +
+      `<small>Cries in last 24h: ${c.cry}. (Link window: ${state.settings.linkWindowMins} min)</small>`;
+
+    const lf = lastFeedTs();
+    const s = state.settings;
+
+    if(!lf){
+      els.feedMeta.textContent = "No 🍼 feeds";
+      els.feedStatus.innerHTML =
+        `Tap “+ Feed” after a feed.<small>Guide only — follow baby’s cues and your care team’s advice.</small>`;
+    } else {
+      const sinceMs = Date.now() - lf;
+      const minH = s.targetMinHrs;
+      const maxH = s.targetMaxHrs;
+      const maxS = s.maxStretchHrs;
+
+      const winStart = lf + minH*3600000;
+      const winEnd = lf + maxH*3600000;
+      const latest = lf + maxS*3600000;
+
+      els.feedMeta.textContent = `Since ${msToHhMm(sinceMs)}`;
+      els.feedStatus.innerHTML =
+        `Since last feed: ${msToHhMm(sinceMs)}. Next window: ${timeOnly(winStart)}–${timeOnly(winEnd)}.` +
+        `<small>Max stretch: ${timeOnly(latest)}. (Window ${minH}–${maxH}h · Max ${maxS}h)</small>`;
+    }
+
+    // Gentle wet nappy caution (very simple + non-alarmist)
+    const wetCheck =
+      c.wet < 3
+        ? ` Wet nappies are low for a newborn. If this continues, or baby is very sleepy/hard to wake, check in with your midwife/GP.`
+        : c.wet < 5
+          ? ` Wet nappies are on the lower side. Keep an eye on output and feeding.`
+          : ` Wet nappies are within the expected range.`;
+
+    els.summaryLine.innerHTML =
+      `Last 24h: 💧 Wet ${c.wet} · 💩 Poo ${c.poo} · 🍼 Feeds ${c.feed} · 😢 Cries ${c.cry}.` +
+      `<small>${wetCheck} If you’re worried at all, check in with your midwife/GP.</small>`;
+
+    const recent = state.events
+      .map((e,idx)=>({e,idx}))
+      .filter(x => within24h(x.e.ts))
+      .sort((a,b)=>b.e.ts - a.e.ts);
+
+    els.entries.innerHTML = "";
+    els.logMeta.textContent = `${recent.length} entr${recent.length===1?"y":"ies"}`;
+
+    if(!recent.length){
+      els.emptyMsg.style.display = "block";
+      els.emptyMsg.textContent = "No entries yet.";
+      return;
+    }
+    els.emptyMsg.style.display = "none";
+
+    for(const {e,idx} of recent){
+      const row = document.createElement("div");
+      row.className = "entry";
+      row.tabIndex = 0;
+
+      let dotClass="dotFeed", label="Feed", emoji="🍼";
+      if(e.type==="wet"){ dotClass="dotWet"; label="Wet"; emoji="💧"; }
+      if(e.type==="poo"){ dotClass="dotPoo"; label="Poo"; emoji="💩"; }
+      if(e.type==="cry"){ dotClass="dotCry"; label="Cry"; emoji="😢"; }
+
+      const agoH = (Date.now()-e.ts)/(1000*60*60);
+      const ago = agoH < 1 ? `${Math.round(agoH*60)}m` : `${agoH.toFixed(1)}h`;
+
+      let tagHtml = "";
+      if(e.type==="cry"){
+        const tag = cryLinkTagForIndex(idx);
+        if(tag?.kind==="hungry") tagHtml = `<span class="tag tagHungry">↳ linked to 🍼 feed (${tag.minutes}m)</span>`;
+        else if(tag?.kind==="nappy") tagHtml = `<span class="tag tagNappy">↳ linked to 💩 poo (${tag.minutes}m)</span>`;
+      }
+
+      const note = (e.note || "").trim();
+      const noteHtml = note ? `<div class="noteBlock">${escapeHtml(note)}</div>` : "";
+
+      const noteBtnLabel = note ? "Edit note" : "Add note";
+
+      row.innerHTML = `
+        <div class="left">
+          <span class="dot ${dotClass}"></span>
+          <div style="min-width:0;">
+            <div class="etype"><span class="emoji" aria-hidden="true">${emoji}</span>${label}</div>
+            <div class="etime">${formatTime(e.ts)} · ${ago} ago</div>
+            ${tagHtml}
+            ${noteHtml}
+          </div>
+        </div>
+        <div class="right">
+          <button class="noteBtn" type="button">${noteBtnLabel}</button>
+        </div>
+      `;
+
+      row.addEventListener("click", ()=>openEntryModal(idx));
+      row.addEventListener("keydown",(ev)=>{ if(ev.key==="Enter"||ev.key===" ") openEntryModal(idx); });
+
+      const noteBtn = row.querySelector(".noteBtn");
+      noteBtn.addEventListener("click", (ev)=>{
+        ev.stopPropagation();
+        openEntryModal(idx, {focusNote:true});
+      });
+
+      els.entries.appendChild(row);
+    }
+  }
+
+  // Buttons
+  els.addFeedBtn.addEventListener("click", ()=>addEvent("feed"));
+  els.addWetBtn.addEventListener("click", ()=>addEvent("wet"));
+  els.addPooBtn.addEventListener("click", ()=>addEvent("poo"));
+  els.addCryBtn.addEventListener("click", ()=>addEvent("cry"));
+  els.clearAllBtn.addEventListener("click", clearAllLogs);
+
+  // Entry modal
+  els.closeEntryModal.addEventListener("click", closeEntryModal);
+  els.cancelEntry.addEventListener("click", closeEntryModal);
+  els.saveEntry.addEventListener("click", saveEntryEdit);
+  els.deleteEntry.addEventListener("click", ()=>{ if(confirm("Delete this entry?")) deleteEntry(); });
+
+  // Settings modal
+  els.openSettings.addEventListener("click", openSettings);
+  els.closeSettings.addEventListener("click", ()=>closeOverlay(els.settingsOverlay));
+  els.saveSettings.addEventListener("click", saveSettings);
+
+  // Insights modal
+  els.openInsights.addEventListener("click", openInsights);
+  els.closeInsights.addEventListener("click", ()=>closeOverlay(els.insightsOverlay));
+
+  // Overlay click-to-close + ESC
+  for(const ov of [els.entryOverlay, els.settingsOverlay, els.insightsOverlay]){
+    ov.addEventListener("click",(ev)=>{ if(ev.target===ov) closeOverlay(ov); });
+  }
+  document.addEventListener("keydown",(ev)=>{
+    if(ev.key==="Escape"){
+      for(const ov of [els.entryOverlay, els.settingsOverlay, els.insightsOverlay]){
+        if(ov.classList.contains("show")) closeOverlay(ov);
+      }
+      editingIndex = null;
+      focusNoteOnOpen = false;
+    }
+  });
+
+  // Rolling refresh
+  setInterval(render, 30*1000);
+
+  // Init
+  load();
+  render();
+</script>
+</body>
+</html>
