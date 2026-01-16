@@ -18,11 +18,6 @@
       --r:18px;
       --mono:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
 
-      --cryBg:#f3e8ff;
-      --cryBorder:#e9d5ff;
-      --cryText:#4c1d95;
-      --cryDot:#a855f7;
-
       --softBg:#eaf3ff;
       --softBorder:#d6e8ff;
       --softText:#0b3b78;
@@ -32,6 +27,18 @@
       --noteBg:#eef2ff;
       --noteBorder:#c7d2fe;
       --noteText:#3730a3;
+
+      /* Highlight (calm, not scary) */
+      --hiBg:#fff7ed;
+      --hiBorder:#fed7aa;
+      --hiText:#9a3412;
+
+      /* Poo guide */
+      --guideBg:#ffffff;
+      --guideRow:#f8fafc;
+      --guideOk:#22c55e;
+      --guideWarn:#f59e0b;
+      --guideBad:#ef4444;
     }
 
     *{box-sizing:border-box}
@@ -94,12 +101,6 @@
       border:1px solid var(--softBorder);
     }
     button.btn.soft:hover{background:#dbeeff}
-    button.btn.cry{
-      background:var(--cryBg);
-      color:var(--cryText);
-      border:1px solid var(--cryBorder);
-    }
-    button.btn.cry:hover{background:#ede0ff}
 
     .statusLine{
       color:#1f2937;font-size:14px;line-height:1.35;
@@ -109,6 +110,35 @@
       display:block;color:var(--muted);margin-top:6px;
       font-size:12px;line-height:1.35;
     }
+
+    /* Highlighted cue */
+    .cueHi{
+      margin-top:8px;
+      padding:10px 10px;
+      border-radius:12px;
+      background:var(--hiBg);
+      border:1px solid var(--hiBorder);
+      color:var(--hiText);
+      font-weight:900;
+      font-size:12.5px;
+      line-height:1.35;
+      display:flex;
+      gap:8px;
+      align-items:flex-start;
+    }
+    .cueHi .badge{
+      flex:0 0 auto;
+      font-family:var(--mono);
+      font-size:11px;
+      padding:2px 8px;
+      border-radius:999px;
+      border:1px solid var(--hiBorder);
+      background:#fff;
+      color:var(--hiText);
+      margin-top:1px;
+      white-space:nowrap;
+    }
+    .cueHi .msg{min-width:0}
 
     .logHead{
       display:flex;justify-content:space-between;align-items:baseline;gap:12px;
@@ -145,7 +175,6 @@
     .dotFeed{background:#22c55e}
     .dotWet{background:var(--primary)}
     .dotPoo{background:#f59e0b}
-    .dotCry{background:var(--cryDot)}
 
     .etype{font-weight:950;font-size:13px;letter-spacing:-0.1px}
     .emoji{margin-right:6px}
@@ -156,25 +185,10 @@
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      max-width:380px;
+      max-width:420px;
       margin-top:2px;
     }
 
-    .tag{
-      display:inline-block;
-      margin-top:6px;
-      padding:3px 8px;
-      border-radius:999px;
-      font-size:11px;
-      font-weight:900;
-      border:1px solid var(--border);
-      color:#374151;
-      background:#f8fafc;
-    }
-    .tagHungry{border-color:#d6e8ff;background:#eef6ff;color:#0b3b78;}
-    .tagNappy{border-color:#fde68a;background:#fffbeb;color:#92400e;}
-
-    /* Notes: content-like */
     .noteBlock{
       margin-top:6px;
       font-size:12px;
@@ -228,6 +242,60 @@
     }
     .dangerBtn:hover{ background:#fff5f5; }
 
+    /* --- Poo colour guide (Option B: inside card, no shadow) --- */
+    details.pooGuide{
+      margin-top:14px;
+      border-top:1px solid var(--border);
+      padding-top:12px;
+    }
+    details.pooGuide summary{
+      list-style:none;
+      cursor:pointer;
+      padding:10px 4px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      font-weight:950;
+      letter-spacing:-0.2px;
+      user-select:none;
+    }
+    details.pooGuide summary::-webkit-details-marker{display:none}
+    .sumMeta{
+      color:var(--muted);
+      font-size:12px;
+      font-family:var(--mono);
+      font-weight:700;
+      white-space:nowrap;
+    }
+    .pooBody{
+      margin-top:8px;
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:12px;
+      background:var(--guideBg);
+    }
+    .guideGrid{display:grid;gap:10px}
+    .guideRow{
+      display:flex;align-items:flex-start;gap:10px;
+      padding:10px;
+      border-radius:12px;
+      background:var(--guideRow);
+      border:1px solid #eef2f7;
+    }
+    .guideDot{width:10px;height:10px;border-radius:999px;flex:0 0 auto;margin-top:4px}
+    .gdOk{background:var(--guideOk)}
+    .gdWarn{background:var(--guideWarn)}
+    .gdBad{background:var(--guideBad)}
+    .guideTitle{font-weight:950;font-size:13px;letter-spacing:-0.1px}
+    .guideText{color:var(--muted);font-size:12px;line-height:1.35;margin-top:2px}
+    .guideFoot{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.4;
+    }
+
     /* Modal */
     .overlay{
       position:fixed; inset:0; background:rgba(15,23,42,0.52);
@@ -266,20 +334,6 @@
     .miniPrimary:hover{background:var(--primaryHover)}
     .miniDanger{border-color:#fecaca;color:#b91c1c}
 
-    .insightsBox{
-      border:1px solid var(--border);
-      border-radius:14px;
-      padding:12px;
-      background:#fbfcff;
-    }
-    .insRow{
-      display:flex;justify-content:space-between;gap:12px;align-items:baseline;
-      padding:8px 0;border-top:1px solid var(--border);
-      font-family:var(--mono);font-size:12px;color:#334155;
-    }
-    .insRow:first-child{border-top:none}
-    .insKey{color:var(--muted);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-weight:800}
-
     .toast{
       position:fixed;left:50%;bottom:18px;transform:translateX(-50%);
       background:#111827;color:#fff;padding:10px 12px;border-radius:999px;
@@ -287,6 +341,12 @@
       transition:opacity .18s ease;z-index:99999;
     }
     .toast.show{opacity:1}
+
+    @media (max-width:520px){
+      button.btn{min-width:0;flex:1}
+      .cueHi{font-size:12px}
+      .etime{max-width:240px}
+    }
   </style>
 </head>
 <body>
@@ -296,23 +356,7 @@
       <h1>Feedr</h1>
       <div class="sub">Tap to log. Feedr shows a rolling last 24 hours.</div>
       <div class="links">
-        <button class="linkBtn" id="openInsights" type="button">Insights</button>
         <button class="linkBtn" id="openSettings" type="button">Settings</button>
-      </div>
-    </div>
-
-    <!-- Crying -->
-    <div class="card">
-      <div class="cardTop">
-        <div class="title">Crying</div>
-        <div class="meta" id="cryMeta">24h: 😢 Cries 0</div>
-      </div>
-      <div class="actions">
-        <button class="btn cry" id="addCryBtn" type="button">+ 😢 Cry</button>
-      </div>
-      <div class="statusLine" id="cryStatus">
-        Tap “+ Cry” when crying starts (or when you notice it).
-        <small>Cries in last 24h: 0. (Link window: 20 min)</small>
       </div>
     </div>
 
@@ -343,7 +387,7 @@
       </div>
 
       <div class="statusLine" id="summaryLine">
-        Last 24h: 💧 Wet 0 · 💩 Poo 0 · 🍼 Feeds 0 · 😢 Cries 0.
+        Last 24h: 💧 Wet 0 · 💩 Poo 0 · 🍼 Feeds 0.
         <small>If you’re worried, baby is very sleepy/hard to wake, or nappies drop off suddenly — check in with your midwife/GP.</small>
       </div>
 
@@ -358,6 +402,78 @@
       <div class="bottomActions">
         <button class="dangerBtn" id="clearAllBtn" type="button">Clear all logs</button>
       </div>
+
+      <!-- Poo colour guide (Option B: attached inside this card) -->
+      <details class="pooGuide" id="pooGuide">
+        <summary>
+          <span>💩 Poo colour guide</span>
+          <span class="sumMeta">Optional · guide only</span>
+        </summary>
+
+        <div class="pooBody">
+          <div class="guideGrid">
+            <div class="guideRow">
+              <span class="guideDot gdOk"></span>
+              <div>
+                <div class="guideTitle">Black/tarry (first day or two)</div>
+                <div class="guideText">Often meconium early on. It typically transitions over the first days.</div>
+              </div>
+            </div>
+
+            <div class="guideRow">
+              <span class="guideDot gdOk"></span>
+              <div>
+                <div class="guideTitle">Green/brown (transitioning)</div>
+                <div class="guideText">Common as poos change in the first week.</div>
+              </div>
+            </div>
+
+            <div class="guideRow">
+              <span class="guideDot gdOk"></span>
+              <div>
+                <div class="guideTitle">Yellow/mustard/seedy</div>
+                <div class="guideText">Very common with breast milk.</div>
+              </div>
+            </div>
+
+            <div class="guideRow">
+              <span class="guideDot gdOk"></span>
+              <div>
+                <div class="guideTitle">Tan/brown</div>
+                <div class="guideText">Common with formula-fed babies too.</div>
+              </div>
+            </div>
+
+            <div class="guideRow">
+              <span class="guideDot gdWarn"></span>
+              <div>
+                <div class="guideTitle">Lots of mucus or very watery + frequent</div>
+                <div class="guideText">If it persists or baby seems unwell, check in with your midwife/GP.</div>
+              </div>
+            </div>
+
+            <div class="guideRow">
+              <span class="guideDot gdWarn"></span>
+              <div>
+                <div class="guideTitle">Red blood (more than a tiny streak)</div>
+                <div class="guideText">Not typical — contact your clinician for advice.</div>
+              </div>
+            </div>
+
+            <div class="guideRow">
+              <span class="guideDot gdBad"></span>
+              <div>
+                <div class="guideTitle">White/grey/chalky</div>
+                <div class="guideText">Not typical — seek medical advice promptly.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="guideFoot">
+            Guide only. If baby is very sleepy/hard to wake, feeding poorly, has a fever, or you’re worried — contact your midwife/GP/local health service.
+          </div>
+        </div>
+      </details>
     </div>
 
     <div class="footer">
@@ -381,7 +497,7 @@
         </div>
         <div>
           <label for="entryNote">Note (optional)</label>
-          <textarea id="entryNote" placeholder="e.g. settled after burp, cluster feed, very unsettled..."></textarea>
+          <textarea id="entryNote" placeholder="e.g. breastfeed, bottle 60mL, settled after burp..."></textarea>
         </div>
       </div>
 
@@ -400,7 +516,7 @@
         <h3 id="settingsTitle">Settings</h3>
         <button class="mini" id="closeSettings" type="button">Close</button>
       </div>
-      <p class="modalSub">These only affect the feeding “window” text + Cry linking window.</p>
+      <p class="modalSub">These only affect the feeding “window” text.</p>
 
       <div class="modalGrid">
         <div>
@@ -419,10 +535,6 @@
           <label for="warnBeforeMins">Warn before max (minutes)</label>
           <input id="warnBeforeMins" type="number" min="0" step="5" />
         </div>
-        <div>
-          <label for="linkWindowMins">Cry link window (minutes)</label>
-          <input id="linkWindowMins" type="number" min="1" step="1" />
-        </div>
       </div>
 
       <div class="modalBtns">
@@ -431,39 +543,21 @@
     </div>
   </div>
 
-  <!-- Insights modal -->
-  <div class="overlay" id="insightsOverlay" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="insightsTitle">
-      <div class="modalHead">
-        <h3 id="insightsTitle">Insights (last 24h)</h3>
-        <button class="mini" id="closeInsights" type="button">Close</button>
-      </div>
-      <p class="modalSub">
-        A Cry is “linked” if the next logged event is a Feed or Poo within your link window. This is just a pattern helper.
-      </p>
-      <div class="insightsBox" id="insightsBox"></div>
-    </div>
-  </div>
-
   <div class="toast" id="toast">Saved</div>
 
 <script>
-  const STORAGE_KEY = "feedr_emojis_notes_v2";
+  const STORAGE_KEY = "feedr_no_cry_window_hi_v2";
 
   const els = {
     addFeedBtn: document.getElementById("addFeedBtn"),
     addWetBtn: document.getElementById("addWetBtn"),
     addPooBtn: document.getElementById("addPooBtn"),
-    addCryBtn: document.getElementById("addCryBtn"),
 
     feedMeta: document.getElementById("feedMeta"),
     feedStatus: document.getElementById("feedStatus"),
 
     nappyMeta: document.getElementById("nappyMeta"),
     summaryLine: document.getElementById("summaryLine"),
-
-    cryMeta: document.getElementById("cryMeta"),
-    cryStatus: document.getElementById("cryStatus"),
 
     entries: document.getElementById("entries"),
     emptyMsg: document.getElementById("emptyMsg"),
@@ -491,13 +585,6 @@
     targetMaxHrs: document.getElementById("targetMaxHrs"),
     maxStretchHrs: document.getElementById("maxStretchHrs"),
     warnBeforeMins: document.getElementById("warnBeforeMins"),
-    linkWindowMins: document.getElementById("linkWindowMins"),
-
-    // insights
-    openInsights: document.getElementById("openInsights"),
-    insightsOverlay: document.getElementById("insightsOverlay"),
-    closeInsights: document.getElementById("closeInsights"),
-    insightsBox: document.getElementById("insightsBox"),
 
     toast: document.getElementById("toast"),
   };
@@ -507,10 +594,9 @@
       targetMinHrs:2,
       targetMaxHrs:3,
       maxStretchHrs:4,
-      warnBeforeMins:30,
-      linkWindowMins:20
+      warnBeforeMins:30
     },
-    events: [] // {type:"feed"|"wet"|"poo"|"cry", ts:number, note?:string}
+    events: [] // {type:"feed"|"wet"|"poo", ts:number, note?:string}
   };
 
   let editingIndex = null;
@@ -572,11 +658,10 @@
       state.settings.targetMaxHrs = safeNum(s.targetMaxHrs) ?? 3;
       state.settings.maxStretchHrs = safeNum(s.maxStretchHrs) ?? 4;
       state.settings.warnBeforeMins = safeNum(s.warnBeforeMins) ?? 30;
-      state.settings.linkWindowMins = safeNum(s.linkWindowMins) ?? 20;
 
       const ev = Array.isArray(parsed.events) ? parsed.events : [];
       state.events = ev
-        .filter(e => e && ["feed","wet","poo","cry"].includes(e.type) && Number.isFinite(Number(e.ts)))
+        .filter(e => e && ["feed","wet","poo"].includes(e.type) && Number.isFinite(Number(e.ts)))
         .map(e => ({type:e.type, ts:Number(e.ts), note: typeof e.note==="string" ? e.note : ""}))
         .sort((a,b)=>a.ts-b.ts)
         .filter(e => within72h(e.ts));
@@ -593,36 +678,18 @@
 
   function counts24h(){
     const recent = state.events.filter(e => within24h(e.ts));
-    let wet=0, poo=0, feed=0, cry=0;
+    let wet=0, poo=0, feed=0;
     for(const e of recent){
       if(e.type==="wet") wet++;
       if(e.type==="poo") poo++;
       if(e.type==="feed") feed++;
-      if(e.type==="cry") cry++;
     }
-    return {wet, poo, feed, cry, total: recent.length};
+    return {wet, poo, feed, total: recent.length};
   }
 
   function lastFeedTs(){
     for(let i=state.events.length-1;i>=0;i--){
       if(state.events[i].type==="feed") return state.events[i].ts;
-    }
-    return null;
-  }
-
-  function cryLinkTagForIndex(index){
-    const e = state.events[index];
-    if(!e || e.type !== "cry") return null;
-
-    const winMs = clamp(Number(state.settings.linkWindowMins)||20, 1, 240) * 60 * 1000;
-
-    for(let j=index+1;j<state.events.length;j++){
-      const next = state.events[j];
-      const dt = next.ts - e.ts;
-      if(dt < 0) continue;
-      if(dt > winMs) return null;
-      if(next.type === "feed") return {kind:"hungry", minutes: Math.round(dt/60000)};
-      if(next.type === "poo") return {kind:"nappy", minutes: Math.round(dt/60000)};
     }
     return null;
   }
@@ -642,7 +709,7 @@
     editingIndex = index;
     focusNoteOnOpen = !!focusNote;
 
-    const labelMap = {feed:"🍼 Feed", wet:"💧 Wet", poo:"💩 Poo", cry:"😢 Cry"};
+    const labelMap = {feed:"🍼 Feed", wet:"💧 Wet", poo:"💩 Poo"};
     els.entryTitle.textContent = "Edit entry";
     els.entrySub.textContent = `Editing: ${labelMap[e.type] || "Entry"}`;
     els.entryDatetime.value = toDatetimeLocalValue(e.ts);
@@ -691,7 +758,6 @@
     els.targetMaxHrs.value = state.settings.targetMaxHrs;
     els.maxStretchHrs.value = state.settings.maxStretchHrs;
     els.warnBeforeMins.value = state.settings.warnBeforeMins;
-    els.linkWindowMins.value = state.settings.linkWindowMins;
     openOverlay(els.settingsOverlay);
   }
 
@@ -700,13 +766,11 @@
     const tMax = safeNum(els.targetMaxHrs.value);
     const maxS = safeNum(els.maxStretchHrs.value);
     const warnM = safeNum(els.warnBeforeMins.value);
-    const linkM = safeNum(els.linkWindowMins.value);
 
     if(tMin!=null) state.settings.targetMinHrs = clamp(tMin,0.5,12);
     if(tMax!=null) state.settings.targetMaxHrs = clamp(tMax,0.5,12);
     if(maxS!=null) state.settings.maxStretchHrs = clamp(maxS,1,12);
     if(warnM!=null) state.settings.warnBeforeMins = clamp(warnM,0,180);
-    if(linkM!=null) state.settings.linkWindowMins = clamp(linkM,1,240);
 
     const minH = Math.min(state.settings.targetMinHrs, state.settings.targetMaxHrs);
     const maxH = Math.max(state.settings.targetMinHrs, state.settings.targetMaxHrs);
@@ -717,45 +781,6 @@
     render();
     toast("Saved");
     closeOverlay(els.settingsOverlay);
-  }
-
-  function buildInsights(){
-    const cries = [];
-    for(let i=0;i<state.events.length;i++){
-      const e = state.events[i];
-      if(e.type === "cry" && within24h(e.ts)) cries.push(i);
-    }
-
-    let hungry=0, nappy=0, unresolved=0;
-    for(const idx of cries){
-      const tag = cryLinkTagForIndex(idx);
-      if(!tag) unresolved++;
-      else if(tag.kind==="hungry") hungry++;
-      else if(tag.kind==="nappy") nappy++;
-    }
-
-    const total = cries.length;
-    const pct = (n) => total ? Math.round((n/total)*100) : 0;
-
-    els.insightsBox.innerHTML = "";
-    const rows = [
-      ["😢 Cries", `${total}`],
-      ["Linked → 🍼 Feed", `${hungry} (${pct(hungry)}%)`],
-      ["Linked → 💩 Poo", `${nappy} (${pct(nappy)}%)`],
-      ["Unlinked", `${unresolved} (${pct(unresolved)}%)`],
-      ["Link window", `${state.settings.linkWindowMins} min`],
-    ];
-    for(const [k,v] of rows){
-      const r = document.createElement("div");
-      r.className = "insRow";
-      r.innerHTML = `<div class="insKey">${k}</div><div>${v}</div>`;
-      els.insightsBox.appendChild(r);
-    }
-  }
-
-  function openInsights(){
-    buildInsights();
-    openOverlay(els.insightsOverlay);
   }
 
   function clearAllLogs(){
@@ -776,11 +801,6 @@
 
     const c = counts24h();
     els.nappyMeta.textContent = `24h: 💧 Wet ${c.wet} · 💩 Poo ${c.poo}`;
-    els.cryMeta.textContent = `24h: 😢 Cries ${c.cry}`;
-
-    els.cryStatus.innerHTML =
-      `Tap “+ Cry” when crying starts (or when you notice it).` +
-      `<small>Cries in last 24h: ${c.cry}. (Link window: ${state.settings.linkWindowMins} min)</small>`;
 
     const lf = lastFeedTs();
     const s = state.settings;
@@ -794,27 +814,52 @@
       const minH = s.targetMinHrs;
       const maxH = s.targetMaxHrs;
       const maxS = s.maxStretchHrs;
+      const warnM = s.warnBeforeMins;
 
       const winStart = lf + minH*3600000;
       const winEnd = lf + maxH*3600000;
       const latest = lf + maxS*3600000;
+      const warnAt = latest - warnM*60000;
+
+      const now = Date.now();
+
+      let cueType = "none"; // "window" | "warn" | "none"
+      let cueText = "";
+      if(now >= warnAt && now < latest){
+        cueType = "warn";
+        cueText = "Approaching max stretch — crying can be a normal hunger cue around this time.";
+      } else if(now >= winStart && now < latest){
+        cueType = "window";
+        cueText = "Feeding window reached — baby may start showing hunger cues now (including fussing or crying).";
+      } else {
+        cueType = "none";
+        cueText = "This is a guide only — cluster feeding is normal.";
+      }
+
+      const cueHtml =
+        cueType === "window"
+          ? `<div class="cueHi"><span class="badge">WINDOW</span><div class="msg">${cueText}</div></div>`
+          : cueType === "warn"
+            ? `<div class="cueHi"><span class="badge">MAX</span><div class="msg">${cueText}</div></div>`
+            : `<small>${cueText}</small>`;
 
       els.feedMeta.textContent = `Since ${msToHhMm(sinceMs)}`;
       els.feedStatus.innerHTML =
         `Since last feed: ${msToHhMm(sinceMs)}. Next window: ${timeOnly(winStart)}–${timeOnly(winEnd)}.` +
-        `<small>Max stretch: ${timeOnly(latest)}. (Window ${minH}–${maxH}h · Max ${maxS}h)</small>`;
+        `<small>Max stretch: ${timeOnly(latest)}. (Window ${minH}–${maxH}h · Max ${maxS}h)</small>` +
+        cueHtml;
     }
 
-    // Gentle wet nappy caution (very simple + non-alarmist)
+    // Wet nappy caution (gentle)
     const wetCheck =
       c.wet < 3
-        ? ` Wet nappies are low for a newborn. If this continues, or baby is very sleepy/hard to wake, check in with your midwife/GP.`
+        ? `Wet nappies are low for a newborn. If this continues, or baby is very sleepy/hard to wake, check in with your midwife/GP.`
         : c.wet < 5
-          ? ` Wet nappies are on the lower side. Keep an eye on output and feeding.`
-          : ` Wet nappies are within the expected range.`;
+          ? `Wet nappies are on the lower side. Keep an eye on output and feeding.`
+          : `Wet nappies are within the expected range.`;
 
     els.summaryLine.innerHTML =
-      `Last 24h: 💧 Wet ${c.wet} · 💩 Poo ${c.poo} · 🍼 Feeds ${c.feed} · 😢 Cries ${c.cry}.` +
+      `Last 24h: 💧 Wet ${c.wet} · 💩 Poo ${c.poo} · 🍼 Feeds ${c.feed}.` +
       `<small>${wetCheck} If you’re worried at all, check in with your midwife/GP.</small>`;
 
     const recent = state.events
@@ -840,21 +885,12 @@
       let dotClass="dotFeed", label="Feed", emoji="🍼";
       if(e.type==="wet"){ dotClass="dotWet"; label="Wet"; emoji="💧"; }
       if(e.type==="poo"){ dotClass="dotPoo"; label="Poo"; emoji="💩"; }
-      if(e.type==="cry"){ dotClass="dotCry"; label="Cry"; emoji="😢"; }
 
       const agoH = (Date.now()-e.ts)/(1000*60*60);
       const ago = agoH < 1 ? `${Math.round(agoH*60)}m` : `${agoH.toFixed(1)}h`;
 
-      let tagHtml = "";
-      if(e.type==="cry"){
-        const tag = cryLinkTagForIndex(idx);
-        if(tag?.kind==="hungry") tagHtml = `<span class="tag tagHungry">↳ linked to 🍼 feed (${tag.minutes}m)</span>`;
-        else if(tag?.kind==="nappy") tagHtml = `<span class="tag tagNappy">↳ linked to 💩 poo (${tag.minutes}m)</span>`;
-      }
-
       const note = (e.note || "").trim();
       const noteHtml = note ? `<div class="noteBlock">${escapeHtml(note)}</div>` : "";
-
       const noteBtnLabel = note ? "Edit note" : "Add note";
 
       row.innerHTML = `
@@ -863,7 +899,6 @@
           <div style="min-width:0;">
             <div class="etype"><span class="emoji" aria-hidden="true">${emoji}</span>${label}</div>
             <div class="etime">${formatTime(e.ts)} · ${ago} ago</div>
-            ${tagHtml}
             ${noteHtml}
           </div>
         </div>
@@ -889,7 +924,6 @@
   els.addFeedBtn.addEventListener("click", ()=>addEvent("feed"));
   els.addWetBtn.addEventListener("click", ()=>addEvent("wet"));
   els.addPooBtn.addEventListener("click", ()=>addEvent("poo"));
-  els.addCryBtn.addEventListener("click", ()=>addEvent("cry"));
   els.clearAllBtn.addEventListener("click", clearAllLogs);
 
   // Entry modal
@@ -903,17 +937,13 @@
   els.closeSettings.addEventListener("click", ()=>closeOverlay(els.settingsOverlay));
   els.saveSettings.addEventListener("click", saveSettings);
 
-  // Insights modal
-  els.openInsights.addEventListener("click", openInsights);
-  els.closeInsights.addEventListener("click", ()=>closeOverlay(els.insightsOverlay));
-
   // Overlay click-to-close + ESC
-  for(const ov of [els.entryOverlay, els.settingsOverlay, els.insightsOverlay]){
+  for(const ov of [els.entryOverlay, els.settingsOverlay]){
     ov.addEventListener("click",(ev)=>{ if(ev.target===ov) closeOverlay(ov); });
   }
   document.addEventListener("keydown",(ev)=>{
     if(ev.key==="Escape"){
-      for(const ov of [els.entryOverlay, els.settingsOverlay, els.insightsOverlay]){
+      for(const ov of [els.entryOverlay, els.settingsOverlay]){
         if(ov.classList.contains("show")) closeOverlay(ov);
       }
       editingIndex = null;
